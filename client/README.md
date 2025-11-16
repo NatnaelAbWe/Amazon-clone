@@ -1,16 +1,92 @@
-# React + Vite
+# 🛒 Amazon Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully functional Amazon-inspired e-commerce web application built for learning and practicing full-stack web development. This project replicates major Amazon features such as product browsing, cart management, checkout flow, and secure user authentication.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+### 🔐 Authentication
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- User signup & login
+- Secure session handling
+- (Optional) Social login support
 
-## Expanding the ESLint configuration
+### 🛍️ Product Management
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Product listing
+- Product detail pages
+- Ratings & reviews UI (static or dynamic)
+- Category-based browsing (optional)
+
+### 🛒 Cart & Checkout
+
+- Add/remove items
+- Update quantity
+- Subtotal calculation
+- Checkout flow with order summary
+
+### 💳 Payments (Optional)
+
+- Stripe payment integration
+- Test mode ready
+
+### 🎨 UI/UX
+
+- Clean, Amazon-like layout
+- Modern, responsive design
+- Smooth interactions & fast performance
+
+---
+
+## 🛠️ Tech Stack
+
+> Replace these with your actual technologies if needed.
+
+### **Frontend**
+
+- React.js / Next.js
+- Tailwind CSS
+- Redux / Context API
+
+### **Backend**
+
+- Node.js + Express
+- Firebase / MongoDB / Supabase
+
+### **Payments**
+
+- Stripe API
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/amazon-clone.git
+
+# Enter the project directory
+cd amazon-clone
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+
+NEXT_PUBLIC_API_URL=YOUR_API_URL
+STRIPE_PUBLIC_KEY=YOUR_STRIPE_PUBLIC_KEY
+STRIPE_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
+FIREBASE_API_KEY=YOUR_FIREBASE_API_KEY
+FIREBASE_AUTH_DOMAIN=YOUR_FIREBASE_AUTH_DOMAIN
+
+amazon-clone/
+│── components/
+│── pages/ or src/app/
+│── context/ or redux/
+│── public/
+│── styles/
+│── utils/
+└── README.md
+```
