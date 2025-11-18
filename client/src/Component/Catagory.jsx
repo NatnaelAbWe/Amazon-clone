@@ -10,7 +10,7 @@ export default function Category() {
         max-w-[1600px]
         gap-[40px]
         relative
-        -mt-[20%]
+        -mt-[5%]
         place-items-center
         mx-auto
       "
