@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { useState } from "react";
 import Rating from "@mui/material/Rating";
-import CurrencyFormat from "../CurrencyFormat/CurrencyFormat";
+import CurrencyFormat from "./CurrencyFormat/";
 import { Link } from "react-router-dom";
-import { DataContext } from "../DataProvider/DataProvider";
-import { Type } from "../../Utility/action.type";
+import { DataContext } from "./DataProvider";
+import { Type } from "../Utility/action.type";
 
 function ProductCard({
   product,
