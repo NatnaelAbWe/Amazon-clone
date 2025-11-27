@@ -4,6 +4,8 @@ import { IoCartOutline } from "react-icons/io5";
 import { CiLocationOn } from "react-icons/ci";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
+import SignUp from "../Page/Auth";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -69,15 +71,16 @@ const Header = () => {
 
           {/* Account */}
           <a href="#" className="hover:outline p-1 rounded-sm">
-            <p className="text-xs">Hello, sign in</p>
+            <Link to="/signup">
+              <p className="text-xs">Hello, sign in</p>
+            </Link>
             <p className="font-bold text-sm">Account & Lists</p>
           </a>
-
           {/* Orders */}
-          <a href="#" className="hover:outline  p-1 rounded-sm">
+          <Link to="/orders" className="hover:outline  p-1 rounded-sm">
             <p className="text-xs">Returns</p>
             <p className="font-bold text-sm">& Orders</p>
-          </a>
+          </Link>
 
           {/* Cart */}
           <div className="relative hover:outline  p-1 rounded-sm cursor-pointer">
@@ -97,13 +100,13 @@ const Header = () => {
         </button>
 
         {/* Logo */}
-        <a href="#">
+        <Link href="/">
           <img
             src="https://pngimg.com/uploads/amazon/amazon_PNG11.png"
             className="w-24"
             alt="amazon"
           />
-        </a>
+        </Link>
 
         {/* Cart */}
         <div className="relative cursor-pointer">

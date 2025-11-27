@@ -1,5 +1,7 @@
-import { useLocation, useEffect, useState } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 import { productUrl } from "../Api/endPoint";
 import ProductCard from "../Component/ProductCard";
 import Loader from "../Component/Loader";

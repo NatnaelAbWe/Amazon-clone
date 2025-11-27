@@ -14,11 +14,11 @@ export default function Hero() {
     >
       <div className="flex items-center justify-between px-12 absolute inset-0 bg-gradient-to-t from-green-500/80 via-red-500/30 to-transparent">
         <i
-          className="fi fi-rr-angle-small-left text-6xl hover:border-2 hover:rounded-full hover:bg-white left-0 mt-[25vh] hover:animate-bounce"
+          className="fi fi-rr-angle-small-left text-6xl hover:border-2 left-0 mt-[25vh] "
           onClick={HandleBgChange}
         ></i>{" "}
         <i
-          className="fi fi-rr-angle-small-right text-6xl hover:border-2 hover:rounded-full hover:bg-white right-0 mt-[25vh] hover:animate-bounce"
+          className="fi fi-rr-angle-small-right text-6xl hover:border-2  right-0 mt-[25vh]"
           onClick={HandleBgChange}
         ></i>
       </div>
