@@ -1,28 +1,25 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Importing React Router components for routing
-import Landing from "./Pages/Landing/Landing"; // Importing the Landing (home) page component
-import SignIn from "./Pages/Auth/Auth"; // Importing the SignIn page component
-import Payment from "./Pages/Payment/Payment"; // Importing the Payment page component
-import Orders from "./Pages/Orders/Orders"; // Importing the Orders page component
-import Cart from "./Pages/Cart/Cart"; // Importing the Cart page component
-import Results from "./Pages/Results/Results"; // Importing the Results page component for search results
-import ProductDetail from "./Pages/ProductDetail/ProductDetail"; // Importing the ProductDetail page component
-import { Elements } from "@stripe/react-stripe-js"; // Importing Stripe Elements to handle payment forms
-import { loadStripe } from "@stripe/stripe-js"; // Importing Stripe's loadStripe function to initialize Stripe
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"; // Importing the ProtectedRoute component to secure routes
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./Page/Home";
+import SignIn from "./Page/Auth";
+import Payment from "./Page/Payment";
+import Orders from "./Page/Orders";
+import Cart from "./Page/Cart";
+import Results from "./Page/Results";
+import ProductDetail from "./Page/ProductDetails";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import ProtectedRoute from "./Component/ProtectedRoute";
 
-// Initializing Stripe with the public key for handling payments
 const stripePromise = loadStripe(
   "pk_test_51Q21RTKXqjMvF8GpDxoYiJrJakY0EfRCfYMvM8Cv5Fm3M1Uj7iPBTAYSDO8gFJZfNptmVcTLePW0Zo569vJv2vwC004KAlge8i"
 );
 
-// Functional component to handle routing in the application
 function Routing() {
   return (
     <Router>
       <Routes>
         {/* Public route for the landing page */}
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home />} />
 
         {/* Public route for authentication (Sign In) */}
         <Route path="/auth" element={<SignIn />} />
@@ -72,4 +69,4 @@ function Routing() {
   );
 }
 
-export default Routing; // Exporting the Routing component for use in the app
+export default Routing;

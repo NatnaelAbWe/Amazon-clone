@@ -1,6 +1,6 @@
 const SignUp = () => {
   return (
-    <section className="m-12 flex flex-col items-center border border-gray-300 rounded-xl w-[350px] mx-auto shadow-lg">
+    <section className="m-12 flex flex-col items-center border border-gray-300 rounded-xl w-[350px] mx-auto shadow-lg lg:w-[700px]">
       <div
         className="w-full bg-[#131921]
  rounded-t-xl"
