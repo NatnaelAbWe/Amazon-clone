@@ -6,12 +6,16 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import SignUp from "../Page/Auth";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "./DataProvider";
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState(false);
 
+  const [state, dispatch] = useContext(DataContext);
+
   return (
-    <header className="w-full bg-black text-white">
+    <header className="w-full bg-black text-white sticky top-0 z-10">
       {/* desktop header */}
       <div className="hidden md:flex max-w-full mx-auto px-4 py-3 items-stretch justify-between gap-4">
         {/* LEFT SECTION */}
@@ -86,7 +90,7 @@ const Header = () => {
           <div className="relative hover:outline  p-1 rounded-sm cursor-pointer">
             <IoCartOutline className="w-8 h-8" />
             <span className="absolute top-0 left-6 bg-yellow-400 text-black text-xs px-1 rounded-full">
-              0
+              {state.basket.length}
             </span>
           </div>
         </div>
