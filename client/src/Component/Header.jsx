@@ -1,206 +1,188 @@
-import { useState } from "react";
-import { CiSearch } from "react-icons/ci";
-import { IoCartOutline } from "react-icons/io5";
-import { CiLocationOn } from "react-icons/ci";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { IoClose } from "react-icons/io5";
-import SignUp from "../Page/Auth";
-import { Link } from "react-router-dom";
-import { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BsSearch } from "react-icons/bs";
+import { SlLocationPin } from "react-icons/sl";
+import { BiCart } from "react-icons/bi";
+import LowerHeader from "./LowerHeader";
 import { DataContext } from "./DataProvider";
+import { auth } from "../Utility/firebase";
+import axios from "axios";
+import { productUrl } from "../Api/endPoint";
 
-const Header = () => {
-  const [openMenu, setOpenMenu] = useState(false);
+export default function Header() {
+  const [{ basket, user }] = useContext(DataContext);
+  console.log(basket);
+  const totalItem = basket?.reduce((amount, item) => item.amount + amount, 0);
 
-  const [state, dispatch] = useContext(DataContext);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`${productUrl}/products/categories`)
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value.length > 0) {
+      axios
+        .get(`${productUrl}/products`)
+        .then((res) => {
+          const filtered = res.data.filter((p) =>
+            p.title.toLowerCase().includes(value.toLowerCase())
+          );
+          setSuggestions(filtered);
+        })
+        .catch((err) => console.error("Error fetching products:", err));
+    } else setSuggestions([]);
+  };
+
+  const handleSuggestionClick = (id) => {
+    navigate(`/products/${id}`);
+    setSearchTerm("");
+    setSuggestions([]);
+  };
+
+  const handleSearch = () => {
+    const category = selectedCategory || "all";
+    navigate(
+      `/results?category=${encodeURIComponent(
+        category
+      )}&search=${encodeURIComponent(searchTerm)}`
+    );
+  };
 
   return (
-    <header className="w-full bg-black text-white sticky top-0 z-10">
-      {/* desktop header */}
-      <div className="hidden md:flex max-w-full mx-auto px-4 py-3 items-stretch justify-between gap-4">
-        {/* LEFT SECTION */}
-        <div className="flex items-center gap-3">
-          {/* Logo */}
-          <a href="#" className="hover:outline p-1 rounded-sm">
-            <img
-              src="https://pngimg.com/uploads/amazon/amazon_PNG11.png"
-              alt="amazon logo"
-              className="w-28 pt-2"
-            />
-          </a>
-
-          {/* Location */}
-          <div className="flex items-center gap-1 hover:outline  p-1 rounded-sm cursor-pointer">
-            <CiLocationOn className="w-6 h-6" />
-            <div>
-              <p className="text-xs text-gray-300">Delivered to</p>
-              <p className="font-bold text-sm">Ethiopia</p>
-            </div>
-          </div>
-        </div>
-
-        {/* SEARCH BAR */}
-        <div className="hidden md:flex flex-1 max-w-full h-11 mt-2">
-          <select className="bg-gray-200 text-black px-2 rounded-l-md border-r border-gray-400 text-sm">
-            <option>All</option>
-            <option>None</option>
-          </select>
-
-          <input
-            type="text"
-            placeholder="Search Amazon"
-            className="hidden md:block md:w-[90%] flex-1 px-4 text-black focus:outline-none bg-white"
-          />
-
-          <button className="w-14 flex items-center justify-center bg-yellow-500 hover:bg-yellow-600 rounded-r-md">
-            <CiSearch className="h-7 w-7 text-black" />
-          </button>
-        </div>
-
-        {/* RIGHT SECTION */}
-        <div className="flex items-center gap-6">
-          {/* Language */}
-          <div className="flex items-center gap-1 hover:outline  p-1 rounded-sm cursor-pointer">
-            <img
-              src="https://pngimg.com/uploads/flags/flags_PNG14655.png"
-              alt="USA Flag"
-              className="w-6 h-4 object-cover"
-            />
-            <select className="bg-black text-white text-sm">
-              <option>EN</option>
-              <option>AM</option>
-              <option>OR</option>
-            </select>
-          </div>
-
-          {/* Account */}
-          <a href="#" className="hover:outline p-1 rounded-sm">
-            <Link to="/signup">
-              <p className="text-xs">Hello, sign in</p>
+    <section className="w-full bg-[#0f1111] text-white">
+      <header className="w-full">
+        <section className="flex items-center justify-between px-4 py-3 gap-4">
+          {/* Logo + Location */}
+          <div className="flex items-center gap-4">
+            <Link to="/" className="block">
+              <img
+                src="https://pngimg.com/uploads/amazon/amazon_PNG11.png"
+                alt="amazon logo"
+                className="w-28 pt-2 object-contain"
+              />
             </Link>
-            <p className="font-bold text-sm">Account & Lists</p>
-          </a>
-          {/* Orders */}
-          <Link to="/orders" className="hover:outline  p-1 rounded-sm">
-            <p className="text-xs">Returns</p>
-            <p className="font-bold text-sm">& Orders</p>
-          </Link>
 
-          {/* Cart */}
-          <div className="relative hover:outline  p-1 rounded-sm cursor-pointer">
-            <IoCartOutline className="w-8 h-8" />
-            <span className="absolute top-0 left-6 bg-yellow-400 text-black text-xs px-1 rounded-full">
-              {state.basket.length}
-            </span>
+            <div className="flex items-center gap-1 cursor-pointer">
+              <SlLocationPin size={19} />
+              <div className="leading-tight">
+                <p className="text-xs text-gray-300">Deliver to</p>
+                <span className="text-sm font-semibold">Ethiopia</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* mobile header */}
-      <div className="flex md:hidden items-center justify-between px-4 py-3">
-        {/* Hamburger Button */}
-        <button onClick={() => setOpenMenu(true)}>
-          <RxHamburgerMenu className="w-7 h-7" />
-        </button>
-
-        {/* Logo */}
-        <Link href="/">
-          <img
-            src="https://pngimg.com/uploads/amazon/amazon_PNG11.png"
-            className="w-24"
-            alt="amazon"
-          />
-        </Link>
-
-        {/* Cart */}
-        <div className="relative cursor-pointer">
-          <IoCartOutline className="w-8 h-8" />
-          <span className="absolute -top-1 left-4 bg-yellow-400 text-black text-xs px-1 rounded-full">
-            0
-          </span>
-        </div>
-      </div>
-
-      {/* Mobile Search Bar */}
-      <div className="md:hidden px-4 pb-3">
-        <div className="flex h-10">
-          <input
-            type="text"
-            placeholder="Search Amazon"
-            className="flex-1 px-3 text-black rounded-l-md focus:outline-none bg-white"
-          />
-          <button className="w-12 flex items-center justify-center bg-yellow-500 rounded-r-md">
-            <CiSearch className="h-6 w-6 text-black" />
-          </button>
-        </div>
-      </div>
-
-      {/* mobile menu */}
-
-      {openMenu && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 z-50">
-          <div className="w-72 h-full bg-white text-black overflow-y-auto p-4 animate-slide-right">
-            {/* Close Button */}
-            <button
-              onClick={() => setOpenMenu(false)}
-              className="flex justify-end w-full mb-4"
+          {/* Search */}
+          <div className="flex flex-1 max-w-2xl items-center bg-white rounded-md overflow-hidden">
+            <select
+              className="px-2 py-2 bg-gray-100 text-sm border-r outline-none"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              <IoClose className="w-7 h-7 text-black" />
+              <option value="">All</option>
+
+              {categories.map((cat, i) => (
+                <option key={i} value={cat}>
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
+            </select>
+
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search Amazon"
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                className="w-full px-3 py-2 text-black outline-none"
+              />
+
+              {suggestions.length > 0 && (
+                <ul className="absolute left-0 right-0 top-full bg-white text-black shadow-lg z-20 max-h-60 overflow-y-auto border border-gray-200">
+                  {suggestions.map((product) => (
+                    <li
+                      key={product.id}
+                      onClick={() => handleSuggestionClick(product.id)}
+                      className="px-3 py-2 hover:bg-gray-200 cursor-pointer text-sm"
+                    >
+                      {product.title}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <button
+              onClick={handleSearch}
+              className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 flex items-center justify-center"
+            >
+              <BsSearch size={24} className="text-black" />
             </button>
-
-            {/* Profile Section */}
-            <div className="mb-4">
-              <p className="text-sm">Hello, sign in</p>
-              <p className="font-semibold text-lg">Your Account</p>
-            </div>
-
-            {/* Menu Sections */}
-            <div className="space-y-5">
-              {/* Lists */}
-              <div className="border-b pb-3">
-                <h4 className="font-bold mb-2">Your Lists</h4>
-                <ul className="space-y-2 text-sm">
-                  <li className="hover:text-yellow-600">Create a List</li>
-                  <li className="hover:text-yellow-600">Wish List</li>
-                </ul>
-              </div>
-
-              {/* Account */}
-              <div className="border-b pb-3">
-                <h4 className="font-bold mb-2">Your Account</h4>
-                <ul className="space-y-2 text-sm">
-                  <li className="hover:text-yellow-600">Orders</li>
-                  <li className="hover:text-yellow-600">Returns</li>
-                  <li className="hover:text-yellow-600">Language</li>
-                  <li className="hover:text-yellow-600">Country: Ethiopia</li>
-                </ul>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-center space-x-2 pt-3">
-                <CiLocationOn className="w-6 h-6 text-gray-700" />
-                <div>
-                  <p className="text-xs text-gray-500">Deliver to</p>
-                  <p className="font-semibold text-sm">Ethiopia</p>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-      )}
 
-      {/* mobile menu animation */}
-      <style>{`
-        @keyframes slideRight {
-          from { transform: translateX(-100%); }
-          to { transform: translateX(0); }
-        }
-        .animate-slide-right {
-          animation: slideRight 0.25s ease-out;
-        }
-      `}</style>
-    </header>
+          {/* Right side */}
+          <div className="flex items-center gap-6 text-sm">
+            {/* Language */}
+            <a className="flex items-center gap-1 cursor-pointer">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_the_United_States_%28DoS_ECA_Color_Standard%29.svg"
+                alt="flag"
+                className="w-6 h-4"
+              />
+              <select className="bg-transparent outline-none text-white cursor-pointer">
+                <option>EN</option>
+              </select>
+            </a>
+
+            {/* Account */}
+            <Link to={!user && "/auth"} className="leading-tight">
+              {user ? (
+                <>
+                  <p className="text-xs">Hello, {user?.email?.split("@")[0]}</p>
+                  <span
+                    className="font-semibold cursor-pointer"
+                    onClick={() => auth.signOut()}
+                  >
+                    Sign out
+                  </span>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs">Hello, Sign In</p>
+                  <span className="font-semibold">Account & Lists</span>
+                </>
+              )}
+            </Link>
+
+            {/* Orders */}
+            <Link to="/orders" className="leading-tight">
+              <p className="text-xs">Returns</p>
+              <span className="font-semibold">& Orders</span>
+            </Link>
+
+            {/* Cart */}
+            <Link to="/cart" className="relative flex items-center">
+              <BiCart size={35} />
+              <span className="absolute -top-1 -right-2 bg-yellow-500 text-black px-2 py-0.5 rounded-full text-xs font-bold">
+                {basket.length}
+              </span>
+            </Link>
+          </div>
+        </section>
+      </header>
+
+      <LowerHeader className="hidden md:block" />
+    </section>
   );
-};
-
-export default Header;
+}
