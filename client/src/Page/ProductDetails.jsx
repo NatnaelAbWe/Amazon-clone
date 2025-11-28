@@ -36,11 +36,13 @@ const ProductDetail = () => {
     <LayOut>
       <section className="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Product Image */}
+
         <div className="flex justify-center items-center">
           <img
             src={image}
             alt={title}
-            className="w-72 md:w-96 object-contain rounded-xl shadow-md"
+            loading="lazy"
+            className="w-72 md:w-96 object-contain rounded-t-2xlxl shadow-md"
           />
         </div>
 
@@ -53,7 +55,7 @@ const ProductDetail = () => {
             <span className="font-medium text-gray-800">{category}</span>
           </p>
 
-          <p className="text-yellow-500 font-semibold mb-3">
+          <p className="text-yellow-500 font-semibold mb-3 shadow-md">
             ⭐ Rating: {rating?.rate} / 5 ({rating?.count} reviews)
           </p>
 
