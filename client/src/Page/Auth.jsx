@@ -16,6 +16,7 @@ function Auth() {
   const [loading, setLoading] = useState({ signIn: false, signUp: false });
 
   const [{ user }, dispatch] = useContext(DataContext);
+  console.log(user);
   const navigate = useNavigate();
   const navStateData = useLocation();
 
@@ -26,6 +27,7 @@ function Auth() {
       setLoading({ ...loading, signIn: true });
       signInWithEmailAndPassword(auth, email, password)
         .then((userInfo) => {
+          // console.log(userInfo);
           dispatch({ type: Type.SET_USER, user: userInfo.user });
           setLoading({ ...loading, signIn: false });
           navigate(navStateData?.state?.redirect || "/");

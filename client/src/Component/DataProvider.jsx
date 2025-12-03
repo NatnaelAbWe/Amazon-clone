@@ -1,25 +1,10 @@
-import { createContext, useReducer } from "react";
+import React, { createContext, useReducer } from "react";
 
 export const DataContext = createContext();
 
-const initialState = {
-  basket: [],
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "ADD_TO_BASKET":
-      return { ...state, basket: [...state.basket, action.item] };
-    default:
-      return state;
-  }
-};
-
-export const DataProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
+export const DataProvider = ({ children, reducer, initialState }) => {
   return (
-    <DataContext.Provider value={[state, dispatch]}>
+    <DataContext.Provider value={useReducer(reducer, initialState)}>
       {children}
     </DataContext.Provider>
   );
