@@ -27,7 +27,7 @@ function Auth() {
       setLoading({ ...loading, signIn: true });
       signInWithEmailAndPassword(auth, email, password)
         .then((userInfo) => {
-          // console.log(userInfo);
+          console.log(userInfo.user);
           dispatch({ type: Type.SET_USER, user: userInfo.user });
           setLoading({ ...loading, signIn: false });
           navigate(navStateData?.state?.redirect || "/");
