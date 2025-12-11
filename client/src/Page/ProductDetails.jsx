@@ -4,10 +4,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { productUrl } from "../Api/endPoint";
 import Loader from "../Component/Loader";
+import { useContext } from "react";
+import { DataContext } from "../Component/DataProvider";
+import { Type } from "../Utility/action.type";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const [, dispatch] = useContext(DataContext);
+
+  const addToCart = () => {
+    dispatch({
+      type: Type.ADD_TO_BASKET,
+      item: { image, title, id, rating, price, description },
+    });
+  };
 
   useEffect(() => {
     axios
@@ -63,7 +74,10 @@ const ProductDetail = () => {
 
           <p className="text-gray-700 leading-relaxed mb-6">{description}</p>
 
-          <button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-lg shadow-md transition">
+          <button
+            className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-lg shadow-md transition"
+            onClick={addToCart}
+          >
             Add to Cart
           </button>
         </div>
