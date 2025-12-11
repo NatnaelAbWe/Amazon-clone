@@ -23,6 +23,13 @@ function ProductCard({
     });
   };
 
+  const removeFromCart = () => {
+    dispatch({
+      type: Type.REMOVE_FROM_BASKET,
+      item: { image, title, id, rating, price, description },
+    });
+  };
+
   return (
     <div
       className={`
@@ -85,6 +92,14 @@ function ProductCard({
             className="mt-4 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-full transition"
           >
             Add to cart
+          </button>
+        )}
+        {!renderAdd && (
+          <button
+            className="mt-4 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-full transition"
+            onClick={removeFromCart}
+          >
+            Remove From Cart
           </button>
         )}
       </div>

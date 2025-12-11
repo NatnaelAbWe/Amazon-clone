@@ -94,7 +94,13 @@ function Payment() {
           <h3 className="text-lg font-semibold">Review items and Delivery</h3>
           <div className="flex flex-col gap-4">
             {basket?.map((item, i) => (
-              <ProductCard key={i} product={item} flex={true} titleUp={true} />
+              <ProductCard
+                key={i}
+                product={item}
+                flex={true}
+                titleUp={true}
+                renderAdd={false}
+              />
             ))}
           </div>
         </div>
