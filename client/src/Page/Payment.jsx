@@ -44,12 +44,24 @@ function Payment() {
         method: "POST",
         url: `/payment/create?total=${total * 100}`,
       });
-
+      // console.log(response);
       const clientSecret = response.data?.clientSecret;
+      console.log(clientSecret);
 
-      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: { card: elements.getElement(CardElement) },
       });
+      console.log(result);
+      if (result.error) {
+        // Payment failed
+        setCardError(result.error.message);
+        setProcessing(false);
+        return;
+      }
+
+      // Payment succeeded
+      const paymentIntent = result.paymentIntent;
+      console.log(paymentIntent);
 
       await db
         .collection("users")
