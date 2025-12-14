@@ -6,7 +6,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173" }));
 
 const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -19,9 +19,11 @@ app.post("/payment/create", async (req, res) => {
     const paymentIntent = await stripeInstance.paymentIntents.create({
       amount: total,
       currency: "usd",
+      automatic_payment_methods: { enabled: true },
     });
+    console.log(paymentIntent);
     console.log("PaymentIntent created:", paymentIntent.id);
-    res.status(200).json({ clientSecret: paymentIntent.client_secret });
+    res.status(200).send({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
     console.error("Stripe error:", err.message);
     res.status(500).json({ message: err.message });

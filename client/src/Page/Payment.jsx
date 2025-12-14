@@ -41,26 +41,36 @@ function Payment() {
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) throw new Error("Card element not found");
 
+      // 1. Create a Payment Method using the Card Element
+      const { error: paymentMethodError, paymentMethod } =
+        await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement, // Pass the CardElement here
+        });
+
+      if (paymentMethodError) {
+        throw new Error(paymentMethodError.message);
+      }
+
+      // *** You will now use paymentMethod.id instead of the CardElement itself ***
+
       const amount = Math.round(total * 100);
 
+      // 2. Get the client secret from your backend
       const response = await axiosInstance.post(
         `/payment/create?total=${amount}`
       );
       const clientSecret = response.data.clientSecret;
       console.log("Using clientSecret:", clientSecret);
 
+      // 3. Confirm the Card Payment using the client secret and the created payment method ID
       const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: user?.displayName || user?.email || "Customer",
-            email: user?.email,
-          },
-        },
+        payment_method: paymentMethod.id, // <--- Pass the ID here
       });
 
       if (result.error) throw new Error(result.error.message);
 
+      // ... (rest of your success logic: saving order, emptying basket, navigating)
       const paymentIntent = result.paymentIntent;
       console.log("Payment succeeded:", paymentIntent.id);
 
@@ -84,7 +94,6 @@ function Payment() {
       setProcessing(false);
     }
   };
-
   return (
     <LayOut>
       <div className="text-xl font-medium p-4 bg-white shadow-md mb-6">
