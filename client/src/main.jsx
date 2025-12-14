@@ -5,9 +5,8 @@ import { DataProvider } from "./Component/DataProvider.jsx";
 import { reducer, initialState } from "./Utility/Reducer.js";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-const stripePromise = loadStripe(
-  "pk_test_51Sd1lPJUD5J964ujFWx2VTXxxZq7kqY3CnvCOJmjeykgo8JosC6tJ4NDgY94kETUgKLw1hGqcrzNvBlzcJndxygj00UoLWhknt"
-);
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
