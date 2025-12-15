@@ -31,25 +31,48 @@ function Payment() {
 
   const handlePayment = async (e) => {
     e.preventDefault();
-
-    if (basket.length === 0) {
-      setCardError("Your basket is empty.");
-      return;
-    }
+    if (processing) return;
+    setProcessing(true);
+    setCardError("");
 
     try {
-      setProcessing(true);
+      if (!stripe || !elements) throw new Error("Stripe.js has not loaded yet");
 
-      const response = await axiosInstance({
-        method: "POST",
-        url: `/payment/create?total=${total * 100}`,
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) throw new Error("Card element not found");
+
+      // 1. Create a Payment Method using the Card Element
+      const { error: paymentMethodError, paymentMethod } =
+        await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement, // Pass the CardElement here
+        });
+
+      if (paymentMethodError) {
+        throw new Error(paymentMethodError.message);
+      }
+
+      // *** You will now use paymentMethod.id instead of the CardElement itself ***
+
+      const amount = Math.round(total * 100);
+
+      // 2. Get the client secret from your backend
+      const response = await axiosInstance.post(
+        `/payment/create?total=${amount}`
+      );
+      const clientSecret = response.data.clientSecret;
+      console.log("Using clientSecret:", clientSecret);
+
+      // 3. Confirm the Card Payment using the client secret and the created payment method ID
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: paymentMethod.id, // <--- Pass the ID here
       });
 
-      const clientSecret = response.data?.clientSecret;
+      if (result.error) throw new Error(result.error.message);
 
-      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: { card: elements.getElement(CardElement) },
-      });
+      // ... (rest of your success logic: saving order, emptying basket, navigating)
+      const paymentIntent = result.paymentIntent;
+      console.log("Payment succeeded:", paymentIntent.id);
 
       await db
         .collection("users")
@@ -57,21 +80,20 @@ function Payment() {
         .collection("orders")
         .doc(paymentIntent.id)
         .set({
-          basket: basket,
+          basket,
           amount: paymentIntent.amount,
           created: paymentIntent.created,
         });
 
       dispatch({ type: Type.EMPTY_BASKET });
-
-      setProcessing(false);
-      navigate("/orders", { state: { msg: "You have placed a new order" } });
-    } catch (error) {
-      setCardError(error.message || "Payment failed. Please try again.");
+      navigate("/orders", { state: { msg: "Order placed successfully" } });
+    } catch (err) {
+      setCardError(err.message);
+      console.error(err);
+    } finally {
       setProcessing(false);
     }
   };
-
   return (
     <LayOut>
       <div className="text-xl font-medium p-4 bg-white shadow-md mb-6">
@@ -94,7 +116,13 @@ function Payment() {
           <h3 className="text-lg font-semibold">Review items and Delivery</h3>
           <div className="flex flex-col gap-4">
             {basket?.map((item, i) => (
-              <ProductCard key={i} product={item} flex={true} titleUp={true} />
+              <ProductCard
+                key={i}
+                product={item}
+                flex={true}
+                titleUp={true}
+                renderAdd={false}
+              />
             ))}
           </div>
         </div>

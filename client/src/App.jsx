@@ -7,7 +7,7 @@ import { auth } from "./Utility/firebase";
 import { Type } from "./Utility/action.type";
 
 function App() {
-  const [dispatch] = useContext(DataContext);
+  const [, dispatch] = useContext(DataContext);
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
@@ -23,6 +23,7 @@ function App() {
         });
       }
     });
+    return () => unsubscribe();
   }, [dispatch]);
   return (
     <>

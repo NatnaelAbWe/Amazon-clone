@@ -19,10 +19,22 @@ app.get("/", (req, res) => {
 });
 
 app.post("/payment/create", async (req, res) => {
-  const total = req.query.total;
-  total > 0
-    ? console.log("payment successful", total)
-    : console.log("invalid payment");
+  const total = Number(req.query.total);
+
+  if (total > 0) {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: total,
+      currency: "usd",
+    });
+
+    console.log(paymentIntent);
+
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } else {
+    res.status(404).json({ message: "total amount must be greater than zero" });
+  }
 });
 
 exports.api = onRequest(app);
